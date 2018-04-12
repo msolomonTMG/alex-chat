@@ -44,6 +44,10 @@
           <button type="submit" class="btn btn-primary mb-2">Send</button>
         </form>
 
+        <span class="float-right">
+          <button id="clear" type="button" class="btn btn-danger mb-2">Clear</button>
+        </span>
+
       </div>
 
     </div>
@@ -102,6 +106,12 @@
         $('#messages').append(messageMarkup)
 
       });
+
+      $('#clear').on('click', function(e) {
+        e.preventDefault();
+        $('#messages').empty();
+        firebase.database().ref('messages/').remove()
+      })
 
     </script>
 
