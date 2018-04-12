@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css" integrity="sha384-9gVQ4dYFwwWSjIDZnLEWnxCjeSWFphJiwGPXr1jddIhOegiu1FwO5qRGvFXOdJZ4" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="alex.css">
+
+    <title>Hello, world!</title>
+    <style>
+    #messages {
+      background-color: rgb(248, 249, 250);
+      height: 50vh;
+      width: 100%;
+    }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      
+      <!-- Header -->
+      <div class="row">
+        <h1>Chat App</h1>
+      </div>
+
+      <!-- Messages -->
+      <div class="row">
+        <div id="messages">
+
+        </div>
+      </div>
+
+      <!-- Input -->
+      <div class="row">
+
+        <form id="new-message-form" class="form-inline">
+          <div class="form-group mb-2">
+            <input id="new-message-input" class="form-control-plaintext" type="text">
+          </div>
+          <button type="submit" class="btn btn-primary mb-2">Send</button>
+        </form>
+
+      </div>
+
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js" integrity="sha384-cs/chFZiN24E4KMATLdqdvsezGxaGsi4hLGOzlXwp5UZB1LY//20VyM2taTB4QvJ" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/4.12.1/firebase.js"></script>
+    <script>
+      // Initialize Firebase
+      var config = {
+        apiKey: "AIzaSyCjDHNFU-gCTkx0WNAvBagWMN4KvxqAfGU",
+        authDomain: "alex-chat-app.firebaseapp.com",
+        databaseURL: "https://alex-chat-app.firebaseio.com",
+        projectId: "alex-chat-app",
+        storageBucket: "alex-chat-app.appspot.com",
+        messagingSenderId: "368065667568"
+      };
+      firebase.initializeApp(config);
+    </script>
+
+    <script type="text/JavaScript">
+
+      $('#new-message-form').on('submit', function(e) {
+        e.preventDefault();
+
+        let newMessageText = $('#new-message-input').val()
+
+        // A post entry.
+        let messageData = {
+          text: newMessageText
+        };
+
+        // Get a key for a new Post.
+        let newMessageKey = firebase.database().ref().child('messages').push().key;
+
+        // Write the new post's data simultaneously in the posts list and the user's post list.
+        let updates = {};
+        updates['/messages/' + newMessageKey] = messageData;
+
+        $('#new-message-input').val("") 
+
+        return firebase.database().ref().update(updates);
+
+      })
+
+      var messageRef = firebase.database().ref('messages/');
+      messageRef.on('child_added', function(snapshot) {
+        console.log(snapshot.val())
+
+        let messageMarkup = '<span class="badge badge-pill badge-secondary">' + snapshot.val().text + '</span><br/>'
+        $('#messages').append(messageMarkup)
+
+      });
+
+    </script>
+
+  </body>
+</html>
